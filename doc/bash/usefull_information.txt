@@ -1,0 +1,38 @@
+####################################################
+#                                                  #
+#     Here you can find useful Bash commands       #
+#                                                  #
+####################################################
+
+
+####################################################
+#########   Basic commands   #######################
+####################################################
+
+
+# create many files in one command
+touch {apple,banana,cherry,durian}
+touch file_{01..100}{a..z}
+
+# put the output in 2 files
+# 1> - succes
+# 2> - error 
+cp -v * ../otherfolder 1>../success.txt 2>../error.txt
+
+# print search text color
+export GREP_OPTIONS='--color=auto'
+
+# serach after a word/expresion
+# "-i" - ignore cappitle letters
+grep -i "searched text" file.txt
+
+# print time form a ping command
+ping -c 1 example.com | grep 'bytes from' | cut -d = -f 4
+
+# difference between double quotes and single quotes
+# variables in single quotes are not printed
+# only in double quotes
+
+
+# Tutorial
+# tldp.org/LDP/Bash-Beginners-Guide/html/sect_08_02.html
