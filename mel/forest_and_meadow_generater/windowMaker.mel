@@ -1,0 +1,99 @@
+/* This script creates a window that it lets you create a specific density of grass and flowers. */
+
+
+// import mel script files
+source flowerMaker_v004;
+source grassMaker_v002;
+source groundMaker_v001;
+
+
+// global variables
+string $grassField;
+string $flowerField;
+
+                                
+global proc closeButton ( string $GrassAndFlowerWindow )
+{
+    /* This procedure closes a window */
+    
+    if (`window -exists $GrassAndFlowerWindow`)
+    {
+        deleteUI -window $GrassAndFlowerWindow;
+    } 
+}
+
+
+global proc createButton ()
+{
+    /* This procedure executes OK button. */
+
+    global string $grassField;
+    global string $flowerField;    
+        
+    // extract the entered valors 
+    int $numberGrass = `intField -query -value $grassField`;
+    int $numberFlowers = `intField -query -value $flowerField`;
+    
+    for ( $i=0; $i<$numberGrass; $i++)
+    {
+        // call procedure from source flowerMaker_v004;
+        grassMaker();
+    }
+   for ( $i=0; $i<$numberFlowers; $i++)
+    {
+        // call procedure from source grassMaker_v002;;
+        flowerMaker();
+    }
+    
+    // close the window after pressing Create button
+    closeButton( "GrassAndFlower" );
+}
+
+
+global proc createWindow ()
+{
+    /* This procedure creates a window which contains changes of grass and flower density. */
+
+    global string $grassField;
+    global string $flowerField;   
+    
+    // Check if the window exists.
+    closeButton( "GrassAndFlower" );
+    
+    // create window
+    string $GrassAndFlowerWindow = `window -title "Create Environment" -widthHeight 500 500 GrassAndFlower`;
+    
+    // create layout
+    rowColumnLayout -rowSpacing 10 10 -columnSpacing 10 10 -numberOfColumns 2 -columnWidth 500 500 
+                    -columnWidth 500 500 -columnAlign 20 "left" -parent "GrassAndFlower" ;
+    
+    // create fields
+    text "Please insert the density for:";
+    text " ";
+    text "Grass: ";
+    string $grassField = `intField `;
+    text "Flowers: ";
+    string $flowerField = `intField `;
+
+    //rangeX = mc.floatFieldGrp(rangeField, query=True, value1=True)
+    
+    // create buttons
+    //    mc.button('colorButton', label='Color', width=150, command='colorButtonCommand()' )
+    button -label "Create" -command "createButton()";
+    button -label "Close" -command "closeButton(\"GrassAndFlower\")";
+
+    // display window
+    showWindow $GrassAndFlowerWindow;
+    
+    select -clear;
+}
+
+
+global proc windowMaker ()
+{
+    /* This procedure create the window. */
+
+    createWindow();
+}
+
+

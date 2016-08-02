@@ -1,0 +1,88 @@
+/* This script creates the ground. */
+
+
+// global variables
+global string $myGround[];
+
+
+proc createGroundShader ()
+{
+    /* This procedure creates the shader for ground. */
+    
+    // check if the shader for petals exists
+    $createShaderGroundBrown = 1;
+    
+    string $shads[] = `ls -mat`;
+    for ( $myNode in $shads )
+    {
+        if ( $myNode == "groundColorBrown" )
+            $createShaderGroundBrown = 0;
+    }
+
+    if ( $createShaderGroundBrown == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "groundColorBrown";
+        shadingNode -asTexture mountain -n "groundTextureBrown";
+        sets -renderable true -noSurfaceShader true -empty -n groundColorBrownSG; 
+        connectAttr -f groundColorBrown.outColor groundColorBrownSG.surfaceShader;
+        connectAttr groundTextureBrown.outColor groundColorBrown.color;
+        
+        setAttr "groundTextureBrown.snowColor" -type double3 0.50 0.39 0.37 ;
+        setAttr "groundTextureBrown.rockColor" -type double3 0.075 0.045 0.027 ;
+        setAttr "groundTextureBrown.amplitude" 2;
+    }
+}
+
+
+proc createGround ( int $lengthGroundValue, int $widthGroundValue )
+{
+    /* This procedure create the form of ground. */
+    
+    global string $myGround[];
+    
+    // 1 square = 10x10 cm
+    $subdivisionXValue = $lengthGroundValue/10;
+    $subdivisionYValue = $widthGroundValue/10;
+    polyPlane -ch on -o on -w $lengthGroundValue -h $widthGroundValue -subdivisionsX $subdivisionXValue -subdivisionsY $subdivisionYValue;
+    string $myGround[] = `ls -sl`;
+}
+
+
+proc connectGroundShader ()
+{
+    /* This procedure connects the shader to ground object. */
+    
+    global string $myGround[];
+    
+    select $myGround;    
+    pickWalk -d down;
+    string $myGroundShape[] = `ls -sl`;
+    sets -edit -forceElement groundColorBrownSG $myGroundShape[0];
+}
+
+
+proc renameGround ()
+{
+    /* This procedure renames ground. */
+    
+    global string $myGround[];
+        
+    select $myGround;
+    rename "Ground";
+}
+
+
+global proc groundMaker ( int $lengthGroundValue, int $widthGroundValue )
+{
+     /* This procedure create the ground. */
+     
+    createGroundShader();
+    createGround( $lengthGroundValue, $widthGroundValue );
+    connectGroundShader();
+    renameGround();
+    
+    select -clear;
+     
+}
+

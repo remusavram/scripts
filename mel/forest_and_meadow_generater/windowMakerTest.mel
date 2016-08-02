@@ -1,0 +1,245 @@
+/* This script is for creating a test window. */
+
+
+// import MEL files
+source flowerMaker_v004;
+source grassMaker_v002;
+source groundMaker_v001;
+
+
+// global variables
+string $grassField;
+string $flowerField;
+string $lengthGround;
+string $widthGround;
+
+                                
+global proc closeWindow ( string $window )
+{
+    /* This procedure closes a window */
+    
+    if (`window -exists $window`)
+    {
+        deleteUI -window $window;
+    } 
+}
+
+
+global proc createGroundButtonProcedure ()
+{
+    /* This procedure is used when "Create" button from
+    "Create Ground" section is pressed. */
+    
+    global string $lengthGround;
+    global string $widthGround;
+    
+    string $allObjects[] = `ls`;
+    string $nodObject;
+    int $groundObjectExist = 0;
+    
+    for ( $nodObject in $allObjects )
+    {
+        if ( $nodObject == "Ground" )
+        {
+            $groundObjectExist = 1;
+            break;
+        }
+    }
+    
+    if ( $groundObjectExist == 0 )
+    {   
+        // extract the entered valors 
+        int $lengthGroundValue = `intField -query -value $lengthGround`;
+        int $widthGroundValue = `intField -query -value $widthGround`;
+        groundMaker($lengthGroundValue, $widthGroundValue);
+    }
+    else
+        {
+            confirmDialog -title "Warning"
+                          -message "Ground object exist! You can create only one ground!"
+                          -button "Cancel" 
+                          -cancelButton "Cancel" ;
+        }
+}
+
+
+global proc regenerateGroundButtonProcedure ()
+{
+    /* This procedure regenerate a new form of ground. */
+
+    global string $lengthGround;
+    global string $widthGround;
+        
+    // before creates a ground, it checks if exist one
+    // and if it exists it will delete and it creates a new one
+    string $allObjects[] = `ls`;
+    string $nodObject;
+    int $groundObjectExist = 0;
+    
+    for ( $nodObject in $allObjects )
+    {
+        if ( $nodObject == "Ground" )
+        {
+            $groundObjectExist = 1;
+            break;
+        }
+    }
+
+    if ( $groundObjectExist == 1 )
+    {
+        delete $nodObject;
+        // extract the entered valors 
+        int $lengthGroundValue = `intField -query -value $lengthGround`;
+        int $widthGroundValue = `intField -query -value $widthGround`;    
+        groundMaker($lengthGroundValue, $widthGroundValue);
+    }
+    else
+        {
+            confirmDialog -title "Warning"
+                          -message "Please first create a ground!"
+                          -button "Cancel" 
+                          -cancelButton "Cancel" ;
+        }
+            
+
+}
+
+
+proc createGroundInterface ()
+{
+    /* This procedure creates ground interface section. */
+    
+    global string $lengthGround;
+    global string $widthGround;
+    
+    rowColumnLayout -rowSpacing    10 10
+                    -columnSpacing 10 10
+                    -numberOfColumns 2 
+                    -columnWidth 1 80
+                    -columnWidth 2 90
+                    -columnAlign 1 "right"
+                    -columnAlign 2 "left";
+                                 
+	    text "Length: ";
+	    string $lengthGround = `intField -value 1000`;    
+	    text "Width: ";
+	    string $widthGround = `intField -value 1000`;
+	
+	setParent ..;
+	
+	rowColumnLayout -rowSpacing    10 10
+                    -columnSpacing 10 10
+                    -numberOfColumns 4  
+                    -columnWidth 1 50  
+                    -columnWidth 2 100
+                    -columnWidth 3 50
+                    -columnWidth 4 100;
+        
+        text " "; text " "; text " "; text " ";
+        text " ";            
+        string $createGroundButton = `button -label "Create"
+	                                         -command "createGroundButtonProcedure()"`;
+	    text " ";
+	    string $createGroundButton = `button -label "Regenerate" 
+	                                         -command "regenerateGroundButtonProcedure()"`;
+    
+    setParent ..;   
+    
+}
+
+
+proc createGrassInterface ()
+{
+    /* This procedure creates grass interface section. */
+
+    // --------------------------------
+}
+
+
+proc createFlowersInterface ()
+{
+    /* This procedure creates flowers interface section. */
+
+    // --------------------------------
+}
+
+
+proc createForestInterface ()
+{
+    /* This procedure creates forest interface section. */
+
+    // --------------------------------
+}
+
+
+global proc createWindow ()
+{
+    /* This procedure creates a window which contains changes of grass and flower density. */
+    
+    // First it checkes if the window is open
+    closeWindow( "wEnvironment" );
+    
+    // create Window
+    string $windowEnvironment = `window -title "Create Environment" "wEnvironment"`;
+    
+    // create Layouts
+    string $scrollLayout = `scrollLayout
+                             -horizontalScrollBarThickness 30
+                             -verticalScrollBarThickness   30`;
+    
+    int $widthFrameLayout = 400;
+    int $heightFrameLayout = 160;
+    columnLayout -adjustableColumn false;
+        // this layout creates a nice border    
+	    frameLayout -labelVisible false
+	                -borderStyle "etchedOut"
+	                -marginHeight 5
+	                -marginWidth 5;
+	    
+	        // ground section
+	        frameLayout -label "Create Ground"
+	                    -borderStyle "out"
+	                    -marginHeight 15
+	                    -marginWidth 15
+	                    -width $widthFrameLayout
+	                    -height $heightFrameLayout;
+	        createGroundInterface();
+	        setParent ..;
+	    
+	        // grass section    
+	        frameLayout -label "Create Grass"
+	                    -borderStyle "out"
+	                    -width $widthFrameLayout
+	                    -height $heightFrameLayout;
+	        createGrassInterface();
+	        setParent ..;
+	    
+	        // flower section
+	        frameLayout -label "Create Flowers"
+	                    -borderStyle "out"
+	                    -width $widthFrameLayout
+	                    -height $heightFrameLayout;
+	        createFlowersInterface();
+	        setParent ..;  
+	            
+	        // forest section
+	        frameLayout -label "Create Forest"
+	                    -borderStyle "out"
+	                    -width $widthFrameLayout
+	                    -height $heightFrameLayout;
+	        createForestInterface();
+	    setParent ..;       
+    setParent ..;
+    
+    showWindow $windowEnvironment; 
+}
+
+
+global proc windowMakerTest ()
+{
+    /* This procedure creates the window. */
+
+    createWindow();
+}
+
+

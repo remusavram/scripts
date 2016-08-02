@@ -1,0 +1,124 @@
+/* This script creates a blade of grass. */
+
+
+// import mel script files
+source flowerMaker_v004;
+
+
+// global variables
+string $myGrass[];
+float $grassHeight;
+
+
+proc createGrassShader ()
+{
+    /* This procedure creates the shader for grass. */
+    
+    // check if the shader for core exists
+    $createShaderGrassGreen = 1;
+    
+    string $shads[] = `ls -mat`;
+    for ( $myNode in $shads )
+    {
+        if ( $myNode == "grassColorGreen" )
+            $createShaderGrassGreen = 0;
+    }
+    
+    if ( $createShaderGrassGreen == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "grassColorGreen";
+        sets -renderable true -noSurfaceShader true -empty -n grassColorGreenSG;
+        connectAttr -f grassColorGreen.outColor grassColorGreenSG.surfaceShader;
+        setAttr "grassColorGreen.color" -type double3 0.54 0.8 0.054 ;
+    }
+}
+
+
+proc connectGrassShader ()
+{
+    /* This procedure connects the shader to grass object. */
+    
+    global string $myGrass[];
+    
+    select $myGrass;    
+    pickWalk -d down;
+    string $myGrassShape[] = `ls -sl`;
+    sets -edit -forceElement grassColorGreenSG $myGrassShape[0];
+}
+
+
+proc createGrass ()
+{
+    /* This procedure creates a blade of grass. */
+    
+    global string $myGrass[];
+    global float $grassHeight;
+    
+    float $grassHeight = `rand 6 8`;
+    polyPlane -axis 0 0 0 -subdivisionsX 2 -subdivisionsY 6 -height $grassHeight;
+    string $myGrass[] = `ls -sl`;
+    displaySmoothness -divisionsU 3 -divisionsV 3 -pointsWire 16 -pointsShaded 4 -polygonObject 3;
+    select -r ( $myGrass[0] + ".vtx[18:20]" ) ;
+    softSelect -softSelectEnabled true -ssd 20 -sud 0.5 ;
+    scale -r -p 0cm 9.86cm 0cm 0.1 1 1 ;
+    softSelect -ssd 8.08 -sud 0.5 ;
+    // bend the grass
+    int $bendGrassRandom = `rand -35 35`;
+    rotate -r -p 0cm 9.18cm 0cm -os $bendGrassRandom 0 0 ;
+    select $myGrass;
+    $extrudeFace = `polyExtrudeFacet -constructionHistory 1 -keepFacesTogether 1 -pvx 0 -pvy 4.84 -pvz
+                     -0.14 -divisions 1 -twist 0 -taper 1 -off 0 -thickness 0 
+                     -smoothingAngle 30 ( $myGrass[0] + ".f[0:11]" )`;
+    print $extrudeFace;
+    setAttr ( $extrudeFace[0] + ".localTranslate" ) -type double3 0 0 0.05 ;
+}
+
+
+proc renameGrass ()
+{
+    /* This procedure renames grass. */
+    
+    global string $myGrass[];
+        
+    select $myGrass;
+    rename "Grass0";
+}
+
+
+proc grassPosition ()
+{
+    /* This procedure change the position of grass. */
+    
+    global string $myGrass[];
+    global float $grassHeight;
+    
+    //move the grass up
+    select $myGrass;
+    float $grassTX = `rand -20 20`;
+    float $grassTZ = `rand -20 20`; 
+    move $grassTX ($grassHeight/2) $grassTZ;
+    
+    // rotate the grass
+    select $myGrass;
+    float $grassRY = `rand 0 360`;    
+    rotate -r -os 0 $grassRY 0;
+}
+
+
+global proc grassMaker ()
+{
+    /* This procedure creates grass. */
+    
+    setEnvironment();     // call procedure from source flowerMaker_v004;
+    createGrassShader();
+    createGrass();
+    connectGrassShader();
+    grassPosition();
+    renameGrass();
+    
+    select -clear;
+}
+
+
+

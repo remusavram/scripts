@@ -1,0 +1,394 @@
+/* 
+    This script create a field with flowers and grass using a window.
+    
+    Create flower requirements:
+        - the flowers must have different number of petals;
+        - petals should have a different form;
+        - check if the "petalColor" shaders, the "coreColor" shaders and "stalkColor" exist. If not they will be created and assign to the flower;
+        - the flower should have different position and rotation;
+        - should exist less than 2 types of flower colors;
+        - the stalk should be a little bit crooked;
+
+*/
+
+
+// To use it, move the script where the project is set, in project/scripts and use this commands in Script Editor:
+//   source flowerMaker;
+//   flowerMaker;
+
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+
+/* This script creates a flower. */
+
+
+// declaration of global variables
+string $myCore[];
+string $myPetal[];
+string $myStalk[];
+int $flowerColor;
+float $flowerTY;
+
+
+proc createPetalShader ()
+{
+    /* This procedure creates the shader for petal. */
+    
+    // check if the shader for petals exists
+    $createShaderPetalOrange = 1;
+    $createShaderPetalWhite = 1;
+    
+    string $shads[] = `ls -mat`;
+    for ( $myNode in $shads )
+    {
+        if ( $myNode == "petalColorOrange" )
+            $createShaderPetalOrange = 0;
+        if ( $myNode == "petalColorWhite" )
+            $createShaderPetalWhite = 0;
+    }
+
+    if ($createShaderPetalOrange == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "petalColorOrange";
+        shadingNode -asTexture ramp -n "petalRampOrange";
+        sets -renderable true -noSurfaceShader true -empty -n petalColorOrangeSG; 
+        connectAttr -f petalColorOrange.outColor petalColorOrangeSG.surfaceShader;
+        connectAttr petalRampOrange.outColor petalColorOrange.color;
+        
+        setAttr "petalRampOrange.colorEntryList[3].color" -type double3 1 0 0;
+        setAttr "petalRampOrange.colorEntryList[3].position" 1; 
+         
+        setAttr "petalRampOrange.colorEntryList[2].color" -type double3 1 1 0;
+        setAttr "petalRampOrange.colorEntryList[2].position" 0.5;
+            
+        setAttr "petalRampOrange.colorEntryList[1].color" -type double3 1 0 0;
+        setAttr "petalRampOrange.colorEntryList[1].position" 0;
+           
+        setAttr "petalRampOrange.type" 8;
+            
+    }
+            
+    if ( $createShaderPetalWhite == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "petalColorWhite";
+        shadingNode -asTexture ramp -n "petalRampWhite";
+        sets -renderable true -noSurfaceShader true -empty -n petalColorWhiteSG; 
+        connectAttr -f petalColorWhite.outColor petalColorWhiteSG.surfaceShader;
+        connectAttr petalRampWhite.outColor petalColorWhite.color;
+            
+        setAttr "petalRampWhite.colorEntryList[3].color" -type double3 1 1 1;
+        setAttr "petalRampWhite.colorEntryList[3].position" 1; 
+          
+        setAttr "petalRampWhite.colorEntryList[2].color" -type double3 1 1 1;
+        setAttr "petalRampWhite.colorEntryList[2].position" 0.2;
+            
+        setAttr "petalRampWhite.colorEntryList[1].color" -type double3 0.9 0.55 0.48;
+        setAttr "petalRampWhite.colorEntryList[1].position" 0;
+            
+        setAttr "petalRampWhite.type" 8;
+    }   
+}
+
+
+proc createCoreShader ()
+{
+    /* This procedure creates the shader for core. */
+    
+    // check if the shader for core exists
+    $createShaderCoreBrown = 1;
+    $createShaderCoreYellow = 1;
+    
+    string $shads[] = `ls -mat`;
+    for ( $myNode in $shads )
+    {
+        if ( $myNode == "coreColorBrown" )
+            $createShaderCoreBrown = 0;
+        if ( $myNode == "coreColorYellow" )
+            $createShaderCoreYellow = 0;
+    }
+    
+    if ( $createShaderCoreBrown == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "coreColorBrown";
+        sets -renderable true -noSurfaceShader true -empty -n coreColorBrownSG;
+        connectAttr -f coreColorBrown.outColor coreColorBrownSG.surfaceShader;
+        setAttr "coreColorBrown.color" -type double3 0.4 0.3 0.14 ;
+    }
+    
+    if ( $createShaderCoreYellow == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "coreColorYellow";
+        sets -renderable true -noSurfaceShader true -empty -n coreColorYellowSG;
+        connectAttr -f coreColorYellow.outColor coreColorYellowSG.surfaceShader;
+        setAttr "coreColorYellow.color" -type double3 1 0.8 0 ;
+    }
+}
+
+
+proc createStalkShader ()
+{
+    /* This procedure creates the shader for stalk. */
+    
+    // check if the shader for stalk exists
+    $createShaderStalkGreen = 1;
+    
+    string $shads[] = `ls -mat`;
+    for ( $myNode in $shads )
+    {
+        if ( $myNode == "stalkColorGreen" )
+            $createShaderStalkGreen = 0;
+    }
+    
+    if ( $createShaderStalkGreen == 1 )
+    {
+        // the shader is not exist and it will be created
+        shadingNode -asShader lambert -n "stalkColorGreen";
+        sets -renderable true -noSurfaceShader true -empty -n stalkColorGreenSG;
+        connectAttr -f stalkColorGreen.outColor stalkColorGreenSG.surfaceShader;
+        setAttr "stalkColorGreen.color" -type double3 0.16 0.64 0.3 ;
+    }
+}
+
+
+proc connectCoreShader ()
+{
+    /* This procedure connects the shader to core object. */
+    
+    global int $flowerColor;
+    
+    $flowerColor +=1;
+    pickWalk -d down;
+    string $myCoreShape[] = `ls -sl`;
+    if ( $flowerColor % 2 == 0 )
+        sets -edit -forceElement coreColorBrownSG $myCoreShape[0];
+    else
+        sets -edit -forceElement coreColorYellowSG $myCoreShape[0];
+}
+
+
+proc connectPetalShader ()
+{
+    /* This procedure connects the shader to petal object. */
+    
+    global string $myPetal[];
+    global int $flowerColor;
+    
+    select $myPetal;
+    pickWalk -d down;
+    string $myPetalShape[] = `ls -sl`;
+    if ( $flowerColor % 2 == 0 )
+        sets -edit -forceElement petalColorOrangeSG $myPetalShape[0];
+    else
+        sets -edit -forceElement petalColorWhiteSG $myPetalShape[0];
+        
+}
+
+
+proc connectStalkShader ()
+{
+    /* This procedure connects the shader to stalk object. */
+    
+    global string $myStalk[];
+    
+    select $myStalk;    
+    pickWalk -d down;
+    string $myStalkShape[] = `ls -sl`;
+    sets -edit -forceElement stalkColorGreenSG $myStalkShape[0];
+}
+
+
+proc createCore ()
+{
+    /* This procedure creates the core for flower. */
+    
+    global string $myCore[];
+    
+    sphere -ax 0 1 0 -n "core";
+    string $myCore[] = `ls -sl`;
+    scale 1 0.5 1;
+    move 0 0.2 0;
+}
+
+
+proc createPetal ()
+{
+    /* This procedure create the petals of flower. */
+    
+    global string $myCore[];
+    global string $myPetal[];
+    
+    // create the petal
+    sphere -ax 0 1 0;
+    move 0 0 -1.6;
+    scale 0.7 0.3 1.7;
+    
+    // reset the coordinates
+    FreezeTransformations;
+    ResetTransformations;
+        
+    // make the core parent of petals
+    string $myPetal[] = `ls -sl`;    
+    parent $myPetal $myCore;
+    
+    // move the tip of the petal
+    select ( $myPetal [0] + ".cv[3] [7]" );
+    move -r 0 1.5 0;
+    
+    // select the inner part of the petal
+    // move them down
+    for ( $uCV = 5 ; $uCV <= 6; $uCV++ )
+    {
+        for ( $vCV = 0; $vCV <= 7; $vCV++ )
+        {
+            select ( $myPetal[0] + ".cv[" + $uCV + "] [" + $vCV + "]" );
+            move -r 0 -0.3 0;
+        }
+    }
+    // before to create the rest of petals the shader is connected with the first petal
+    connectPetalShader();
+    
+    // create the rest of the petals
+    int $numPetals = `rand 10 20`;
+    select $myPetal[0];
+    float $degreeApart = ( 360 / $numPetals );
+    for ($i = 1; $i < $numPetals; $i++ )
+    {
+        duplicate;
+        rotate -r 0 $degreeApart 0;
+    
+        // randomly rotate the petals
+        float $petalRX = `rand -5 5`;
+        float $petalRY = `rand -5 5`;
+        float $petalRZ = `rand -5 5`;
+        FreezeTransformations;    
+        rotate $petalRX $petalRY $petalRZ;  
+    }    
+}
+
+
+proc createStalk ()
+{
+    /* This procedure create the stalk. */
+    
+    global float $flowerTY;
+    global string $myStalk[];
+    global string $myCore[];
+    
+    float $coreTX = `getAttr core.translateX`;
+    float $coreTZ = `getAttr core.translateZ`;
+    // y ax is calculated by flower position
+    $coreTY = $flowerTY/2;
+    
+    polyPipe -subdivisionsHeight 3;
+    scale 0.24 $flowerTY 0.24;
+    move $coreTX $coreTY $coreTZ;
+    displaySmoothness -divisionsU 3 -divisionsV 3 -pointsWire 16 -pointsShaded 4 -polygonObject 3;
+    string $myStalk[] = `ls -sl`;
+    parent $myStalk $myCore;
+    
+    // bend the stalk
+    int $bendStalkRandomUpX = `rand -1.5 1.5`;
+    int $bendStalkRandomUpZ = `rand -1.5 1.5`;
+    while ( ( $bendStalkRandomUpX == 0 ) && ( $bendStalkRandomUpZ == 0 ) )
+    {
+        $bendStalkRandomUpX = `rand -1.5 1.5`;
+        $bendStalkRandomUpZ = `rand -1.5 1.5`;
+    }
+    for ( $uCV = 40 ; $uCV < 60; $uCV++ )
+    {
+        select ( $myStalk[0] + ".vtx[" + $uCV + "]" );
+        move -r $bendStalkRandomUpX 0 $bendStalkRandomUpZ;
+        select ( $myStalk[0] + ".vtx[" + ($uCV+60) + "]" );
+        move -r $bendStalkRandomUpX 0 $bendStalkRandomUpZ;
+    }
+    
+    int $bendStalkRandomDownX = `rand -1.2 1.2`;
+    int $bendStalkRandomDownZ = `rand -1.2 1.2`;
+        while ( ( $bendStalkRandomDownX == 0 ) && ( $bendStalkRandomDownZ == 0 ) )
+    {
+        $bendStalkRandomDownX = `rand -1.2 1.2`;
+        $bendStalkRandomDownXZ = `rand -1.2 1.2`;
+    }
+    for ( $uCV = 20 ; $uCV < 40; $uCV++ )
+    {
+        select ( $myStalk[0] + ".vtx[" + $uCV + "]" );
+        move -r $bendStalkRandomDownX 0 $bendStalkRandomDownZ;
+        select ( $myStalk[0] + ".vtx[" + ($uCV+100) + "]" );
+        move -r $bendStalkRandomDownX 0 $bendStalkRandomDownZ;
+    }
+}
+
+
+proc flowerPosition ()
+{
+    /* This procedure change the position of flower. */
+    
+    global string $myCore[];
+    global string $myStalk[];
+    global float $flowerTY;
+    
+    //move the flower up
+    select $myCore;
+    float $flowerTX = `rand -20 20`;
+    float $flowerTY = `rand 10 15`;
+    float $flowerTZ = `rand -20 20`; 
+    move $flowerTX $flowerTY $flowerTZ;
+    
+    // rotate the flower
+    select $myCore;
+    float $flowerRX = `rand -30 30`;
+    float $flowerRY = `rand -30 30`;
+    float $flowerRZ = `rand -30 30`;    
+    rotate -r -os $flowerRX $flowerRY $flowerRZ;
+}
+
+
+proc renameFlower ()
+{
+    /* This procedure renames the flower. */
+    
+    global string $myCore[];
+    
+    select $myCore;
+    rename "Flower0";
+}
+
+
+global proc setEnvironment ()
+{
+    /* This procedure sets the environment. */
+    
+    softSelect -softSelectEnabled false;
+}
+
+
+global proc flowerMaker ()
+{
+    /* This procedure create the flower. */
+    
+    global string $myCore[];
+    global string $myPetal[];
+    
+    setEnvironment();
+    createPetalShader();
+    createCoreShader();
+    createStalkShader();
+    createCore();
+    connectCoreShader();
+    createPetal();   
+    flowerPosition();
+    createStalk();
+    connectStalkShader();
+    renameFlower();
+    
+    select -clear;
+}
+
+
+
+
