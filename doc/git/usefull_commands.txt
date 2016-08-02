@@ -1,0 +1,407 @@
+####################################################
+#                                                  #
+#      Here you can find useful Git commands       #
+#                                                  #
+####################################################
+
+
+####################################################
+#######   Configure git   ##########################
+####################################################
+
+# Version of git
+git --version
+
+# Configure git
+git config --global user.name "Remus Avram"
+git config --global user.email "remusvrm@yahoo.com"
+git config --global core.editor "nano"
+git config --color.ui true
+cat ~/.gitconfig
+
+# configure alias
+# st = astatus
+git config --global alias.st status
+# co = checkout
+git config --global alias.co checkout
+# ci = commit
+git config --global alias.ci commit
+# br = branch 
+git config --global alias.br branch
+# df = diff
+git config --global alias.df diff
+# dfs = diff --staged
+git config --global alias.dfs "diff --staged"
+# logg = nice view
+git config --global alias.logg "log --graph --decorate --oneline --abbrev-commit --all"
+
+# Download autocompletion file
+wget https://github.com/git/git/raw/master/contrib/completion/git-completion.bash
+
+# and add it in ~/.bashrc
+printf "# Source autocompletion in git\n
+if [ -f ~/.git-completion.bash ]; then\n
+        source ~/.git-completion.bash\n
+fi\n" >> ~/.bashrc
+
+# if you want to ignore some files for all the repository
+# you can create a global configuration called ".gitignore_global"
+# and add it in your homefolder and then add it to your profile:
+git config --global core.excludesfile ~/.gitignore_global
+
+
+###########################################################
+####### Basic commands in git #############################
+###########################################################
+
+# Initialize git folder
+git init
+
+# add in stage
+git add fileName
+
+# git commit
+git commit -m "Message"
+
+# git add and commit
+git commit -am "Message"
+
+# delete file
+git rm file.txt
+
+# rename file
+git mv file newFile
+
+# find the status of the git
+git status
+
+# see the difference between the file from master and the modified file
+# only if it isn't added in stage
+git diff
+
+# see modifications between file from repositroy and one from staged
+git diff --staged fileName
+
+# see only the changed words
+git diff --color-words fileName
+
+# check the curent branch and if the file is modified,
+# then it brings the file from branch back ("--" is for curent branch)
+git checkout -- fileName
+
+# bring back the file form stage to the last commit
+git reset HEAD fileName
+
+# if we want to change the last message commit or
+# we want to add something more in the latest commit without 
+# creating another commit
+git commit --amend -m "Message"
+
+# if we want to go back to a privious version
+git checkout 6a0bce4b8cf43fd3 -- fileName
+
+# if you want to undo the changes for a commit
+git revert 878db603c21058
+
+# undo multiple commits
+# git reset - specified where the HEAD pointer should point
+# moving the pointer to another commit
+# --soft - keep the changed files in staged
+git reset --soft 878db603c21058
+
+# --mixed - keep the changed files in "Unstaged changes zone"
+git reset --mixed d5b9b402b4d5e94d3
+
+# --hard - deletes the chnages files forever
+git reset --hard 878db603c21058
+
+# remove untracked files from work directory
+# !!! if you do that it will remove them forever
+# just show what we will remove
+git clean -n
+# remove the files
+git cean -f
+# if the file is in staged mode then first unstaged it and then remove
+git reset HEAD fileName
+git clean -f
+
+# ingnore adding in a git files
+# .gitignore file is written like a bash
+# create a .gitignore file and add there all the file which should be ignored
+
+# if you want to ignore some files for all the repository
+# you can create a global configuration called ".gitignore_global"
+# and add it in your homefolder and then add it to your profile:
+git config --global core.excludesfile ~/.gitignore_global
+
+# user configuration file is located here:
+cat ~/.gitconfig
+
+# if we want to stop untracking a file in git we add it in .gitignore
+# and rm from cache:
+git rm --cached tempfile
+
+# list of the curet files from one directory
+git ls-tree HEAD 
+git ls-tree master 
+git ls-tree 878db603c210
+
+# to see tree files when were modified one step before
+git ls-tree HEAD^
+git ls-tree HEAD~1
+
+# to see tree files when were modified two step before
+git ls-tree HEAD^^
+git ls-tree HEAD~2
+
+
+##################################################
+############  LOG  ###############################
+##################################################
+
+# print limited number of commits
+git log -n 2
+
+# print limited logs until a date
+git log --until='2014-04-14'
+git log --before='2014-04-14'
+
+# print limited logs since a date
+git log --since='2012-06-20'
+git log --after='2012-06-20'
+
+# print ligs between 2 dates
+git log --since='2012-06-20' --until='2014-04-14'
+
+# print logs via Author
+git log --author="Remus"
+
+# print logs what contains a specific word
+git log --grep="Init"
+
+# print logs in one line (nice view)
+git log --oneline 
+
+# print logs in one line - the last 3 commits
+git log --oneline -3
+
+# print logs in one line but with all id
+git log --format=oneline
+
+# print logs specified a range of time log
+# 23423423 - oldest then 53452344
+git log 23423423..53452344 --oneline
+
+# print logs for a specific file starting with a specific date
+git log 23423423.. fileName
+
+# print logs and changes in the same time
+git log -p 23423423.. fileName
+
+# print logs with statistics
+git log --stat --summary
+
+# print logs with short description
+git log --format=short
+
+# print logs with full description
+git log --format=full
+
+# print logs with fuller description
+git log --format=fuller
+
+# print logs with email description
+git log --format=email
+
+# print logs with a graph of each of our commits
+git log --graph
+
+# print logs with a nice combination of parameters
+git log --oneline --graph --all --decorate
+
+# look at a specific commit
+git show HEAD
+git show --format=oneline HEAD
+
+# to see the changes form one point in time and now 
+git diff f29b336 
+
+# compare the difference between tow commits
+git diff f29b336..ca5cde5
+
+
+#####################################################
+#################  Branching  #######################
+#####################################################
+
+# see all the branches from a git
+ls -la .git/refs/heads/
+
+# print all the branches
+git branch -a
+
+# create a new branch
+git branch newBranch
+
+# change the branch
+git checkout newBranch
+
+# create a branch and switch it in the same time
+git checkout -b newBranch
+
+# compare two branches
+git diff master..newBranch
+
+# rename a branch
+git branch -m currentNameBrunch newNameBranch
+
+# delete a branch
+git branch -d nameBranch
+
+# if we commit something on one branch then we can't delete 
+# it only with "-d" parameter it checks and then 
+# we have the option to mearch the branch or delete it
+git branch -D nameBranch
+
+# to see on which branch you are all the time
+export PS1='$(__git_ps1 "(%s)") > '
+
+
+## Mearging Branches ##
+
+# merge a branch with the master branch - fast forward
+git checkout master # move to the master branch
+git merge nameBranch
+git branch -d nameBranch
+
+# a full merge with the master branch is when we have new commits
+# on the master branch too 
+
+# force git to create a merge commit anyway
+git merge --no-ff nameBranch
+
+# do dthe merge only if you can do a fast-forward; otherwise abord
+git merge --ff-only nameBranch
+
+# If you want to save something from a branch and move to another
+# branch without commit, you save in another way
+git stash save "Message"
+
+# view changes in a stach
+git stash list
+
+# look at the stash and see what it is in there
+git stash show -p stash@{0}
+
+# pull items out of the stash - delete the stash too
+git stash pop
+
+# pull items out of the stash - don't delete the stash
+git stash apply
+
+# delete the stash which is not needed anymore
+git stash drop stash@{0}
+
+# delete all stashs
+git stash clear
+
+
+###########################################################
+##############   Remotes   ################################
+###########################################################
+
+
+# a good place to create a remove is: https://github.com
+# create a new account and a new repository
+
+# to see a list of all the remotes 
+git remote
+
+# to see a list of all the remotes in details
+git remote -v 
+
+# print remote branch
+git branch -r
+
+# to add a new remote:
+git remote add origin https://github.com/remusvrm/explore_california.git
+# origin is the alias of what we want to rename our remote by
+# the url where we can find our remote
+
+# where this remotes are stores:
+cat .git/config
+
+# remove a remote
+git remote rm origin
+
+# push our cod to the remote branch:
+# "-u" means it keeps traking
+git push -u origin master
+
+# clone the repository in your computer
+git clone https://git hub.com/remusvrm/explore_california.git nameLocalFolder
+
+# we can sync the remote repository with our local branch
+# without bringing the changes from remote directly in our
+# master repository, but in origin/master
+git fetch
+
+# merge master with origin/master (after fetch)
+git merge origin/master
+
+# if you want to getch and merge in the same time you can use git pull
+# git pull = git fetch + git merge
+git pull
+
+# create a new branch and clone what is on the other remote branch
+git branch newBranch origin/simpleBranch
+# or
+git checkout -b newBranch origin/simpleBranch
+
+# if you try to push changes on an updated repository then
+# we will get an error; to solve this you have to fetch first
+# and then merge and then push again
+git fetch
+git merge origin/master
+git push
+
+# delete a remote branch
+git push origin :simpleBranch
+# or
+git push origin --delete simpleBranch
+
+
+################################################
+##########   Tools    ##########################
+################################################
+
+
+GitWeb
+ - https://git.wiki.kernel.org/index.php/Gitweb
+
+# Graphical User Interfaces
+
+# for Mac
+GitX
+GitHub
+SoruceTree
+Tower
+SmartGit
+Gitbox
+
+# for Windows
+TortoiseGit
+GitHub
+Git Extensions
+SmartGit
+
+
+# Git Hosting Companies
+GitHub
+Bitbucket
+Gitorious
+
+# Git Self-Hosting
+Gitosis
+Gitolite
+
