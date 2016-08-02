@@ -1,0 +1,85 @@
+// This script create a square block of cubs
+
+
+// global variables
+global int $blockSize;
+global int $currentFrame = 2;
+
+
+global proc createCube(int $i, int $j, int $k)
+{
+    /* This procedure creates cubes and move them using
+    the coordinates $i, $j, $k and setKeyframes. */
+    
+    global int $currentFrame;
+    
+    string $nameCube = "polyCube" + $i + $j + $k;
+    $nodeCube = `polyCube -width 1 -height 1 -depth 1 -name $nameCube`;
+    currentTime $currentFrame -update no;
+    setKeyframe $nodeCube;
+    $currentFrame += 3;
+    currentTime $currentFrame;
+    move $i $k $j -relative $nodeCube;
+    setKeyframe $nodeCube;
+}
+
+
+global proc matrix3D ( int $blockSize )
+{   
+    /* This procedure calculates where the cubes should be for the specific form.
+       And it calls createCube when it found the correct place. */
+    
+    global int $blockSize;
+    
+    for ( $m = 1; $m <= $blockSize; ++$m )
+    {
+		for ( $j = -$m; $j <= $m; ++$j )
+		{
+		    for ( $i = -$m; $i <= $m; ++$i )
+		    {
+		        for ( $k = -$m; $k <= $m; ++$k )
+		        {
+		            if ((( $i%2 == 0 ) && ( $j%2 == 0 ) && ( $k%2 != 0 ) && ((abs($i) == $m) || (abs($j) == $m) || (abs($k) == $m)))  ||  (( $i%2 != 0 ) && ( $j%2 != 0 ) && ( $k%2 != 0 )  && ((abs($i) == $m) || (abs($j) == $m) || (abs($k) == $m))))
+		            {
+		                createCube($i, $j, $k);
+		            }
+		            else if ((( $i%2 != 0 ) && ( $j%2 == 0 ) && ( $k%2 == 0 ) && ((abs($i) == $m) || (abs($j) == $m) || (abs($k) == $m)))  ||  (( $i%2 == 0 ) && ( $j%2 != 0 ) && ( $k%2 == 0 ) && ((abs($i) == $m) || (abs($j) == $m) || (abs($k) == $m))))
+		            {
+		                createCube($i, $j, $k);
+		            }
+		        }
+		    }
+		}
+	}
+	// deselect the last created object
+    select -cl; 
+}
+
+
+////// Main program //////
+
+
+// promptDialog for request the block size
+$blockSizeDialog = `promptDialog
+                    -title "Block Size"
+	                -message "Please enter the block size: "
+	                -button "OK"
+	                -button "Cancel"
+	                -defaultButton "OK"
+	                -cancelButton "Cancel"
+	                -dismissString "Cancel"`;
+
+if ( $blockSizeDialog == "OK" )
+{   
+    $blockSizeText = `promptDialog -query -text`;
+    $blockSize = int($blockSizeText);
+    matrix3D( $blockSize/2 );
+}
+ 
+
+
+
+
+
+
+
