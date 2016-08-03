@@ -1,0 +1,22 @@
+// This script teaches you how to use "while" loop
+
+// Change this vriables to change the number and the form of balls
+
+$numberBall = 50;               // number of balles
+$thickness = 0.2;       // controls the y scale
+
+//===============================================================
+
+
+// don't touch anything under here
+
+
+
+for ($contor = 0; $contor <= $numberBall; $contor++ ) 
+{    
+    sphere;
+    scale 1 $thickness 1;
+    move 0 $contor 0;
+}
+
+print ( "The script 'for loop' has run successfully!!" );

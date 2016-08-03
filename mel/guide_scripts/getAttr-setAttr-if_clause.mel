@@ -1,0 +1,21 @@
+// Use set Attribut;
+//float $myPositionY = 10.4;
+//setAttr pCube1.translateY $myPositionY;
+
+// Use get Attribute;
+string $myRenderer = `getAttr defaultRenderGlobals.currentRenderer`;
+//print ( "the old renderer was " + $myRenderer + "\n");
+
+// Set attribute;
+//setAttr defaultRenderGlobals.currentRenderer -type "string" "mentalRay";
+print ( "the renderer is " + $myRenderer + "\n");
+
+// if clause
+if ( $myRenderer=="mentalRay" )
+{
+    setAttr "mentalrayGlobals.passAlphaThrough" 1;
+}
+else
+{
+    print ( "the current renderer is not mental ray!!! \n\n" );
+};

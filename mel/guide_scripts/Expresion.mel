@@ -1,0 +1,13 @@
+// Create a text (Create->Text)
+// Use scene Expresion.ma
+//expression -name "countdownExp"
+
+int $counter;
+
+if ( currentTime == 1 )
+{
+        $counter = 100;
+}
+
+$counter--;
+setAttr textForBevel1.text -type "string" $counter;

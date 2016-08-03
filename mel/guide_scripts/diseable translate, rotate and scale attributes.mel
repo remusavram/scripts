@@ -1,0 +1,18 @@
+// This scrip diseable translate, rotate and scale attributes
+
+string $mySelection[] = `ls -sl`;
+
+for ($nodSelected in $mySelection)
+{
+    setAttr -keyable false ($nodSelected + ".sx");
+    setAttr -keyable false ($nodSelected + ".sz");
+    setAttr -keyable false ($nodSelected + ".sy");
+    
+    setAttr -keyable false ($nodSelected + ".tx");
+    setAttr -keyable false ($nodSelected + ".tz");
+    setAttr -keyable false ($nodSelected + ".ty");
+    
+    setAttr -keyable false ($nodSelected + ".rx");
+    setAttr -keyable false ($nodSelected + ".rz");
+    setAttr -keyable false ($nodSelected + ".ry");
+}

@@ -1,0 +1,56 @@
+// This script create a window with translate and rotate attributes and buttons for every ax which set keys
+
+// create procedure for command button
+proc superKeyer( string $operation, string $axis )
+{
+    string $ax = $operation + $axis;
+    string $selectedObjects[] = `ls -sl`;
+    for ( $obj in $selectedObjects )
+    {
+        setKeyframe -attribute $ax;
+    }
+}
+
+
+// Check for a window and delete if needed
+if  ( `window -exists EZkeyer` )
+{
+    deleteUI -window EZkeyer;
+};
+
+string $ezWindow = `window -title "EZKeyer"
+                           -widthHeight 256 256
+                           EZkeyer`; // name of window
+
+// define layout
+rowColumnLayout -numberOfColumns 2
+                -columnWidth 1 16;
+
+$translateVariable = "translate";
+$rotateVariable = "rotate";
+$X = "X";
+$Y = "Y";
+$Z = "Z";
+
+// insert buttons and texts message in window                
+// column 1                                                             column 2
+
+symbolButton -image "ezX.bmp"       
+             -command "superKeyer($translateVariable, $X)";            text -label "Translate X";
+symbolButton -image "ezY.bmp"
+             -command "superKeyer($translateVariable, $Y)";            text -label "Translate Y";
+symbolButton -image "ezZ.bmp"
+             -command "superKeyer($translateVariable, $Z)";            text -label "Translate Z";
+
+separator;                                                             separator;
+separator;                                                             separator;
+
+symbolButton -image "ezX.bmp"
+             -command "superKeyer($rotateVariable, $X)";               text -label "Rotate X";
+symbolButton -image "ezY.bmp"
+             -command "superKeyer($rotateVariable, $Y)";               text -label "Rotate Y";
+symbolButton -image "ezZ.bmp"
+             -command "superKeyer($rotateVariable, $Z)";               text -label "Rotate Z";
+
+// this will show the window
+showWindow $ezWindow;

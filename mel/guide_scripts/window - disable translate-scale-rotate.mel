@@ -1,0 +1,41 @@
+// This script disable translate, rotate and scale attributes using a window
+
+
+proc createWindow ()
+{
+    /* This procedure creates a window with 3 buttons that it disables attributes.  */
+    
+    if  ( `window -exists myControlWindow` )
+    {
+        deleteUI -window myControlWindow;
+    };
+    
+    window -title "Remove attrs from channel box" -rtf true myControlWindow;
+    rowLayout -nc 3;
+    
+    button -label "Translate" -c "attrRemover t" myTransT;
+    button -label "Rotate" -c "attrRemover r" myTransR;
+    button -label "Scale" -c "attrRemover s" myTransS;
+    
+    showWindow myControlWindow;
+}
+
+
+proc attrRemover( string $myTranslate)
+{
+    /* This procedure removes scale attributes from selected objects. */
+    
+    string $mySelection[] = `ls -sl`;
+
+    for ($myNode in $mySelection)
+    {
+        setAttr -keyable false ($myNode + "." + $myTranslate + "x");
+        setAttr -keyable false ($myNode + "." + $myTranslate + "z");
+        setAttr -keyable false ($myNode + "." + $myTranslate + "y");
+    }
+}
+
+
+// main program
+
+createWindow();

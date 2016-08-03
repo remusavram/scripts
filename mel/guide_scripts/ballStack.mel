@@ -1,0 +1,31 @@
+// This script create a ballstack
+
+// How to use it:
+// 1. Set the maya project in the respective project. Ex: C:\Users\Remus\Documents\maya\projects\default
+// 2. Add the script in this folder: C:\Users\Remus\Documents\maya\projects\default\scripts
+
+// appel:
+//source ballStack;
+//ballStack 20 0.3;
+
+
+//===============================================================
+
+
+// don't touch anything under here
+
+
+
+global proc ballStack ( int $numberBall, float $thickness  ) 
+{
+    for ($contor = 0; $contor <= $numberBall; $contor++ ) 
+    {    
+        sphere;
+        scale 1 $thickness 1;
+        move 0 $contor 0;
+    }
+    
+    print ( "\n The script \"ballStack\" has run successfully!! \n" );
+}
+
+

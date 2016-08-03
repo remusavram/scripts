@@ -1,0 +1,26 @@
+// This script teach you how to use variables
+
+int $myInteger = 5;
+
+float $myFloat = 4.3;
+
+string $myString = "This is a string";
+
+// array
+string $myArrayString[] = { "kyle" , "3", "test" };
+
+int $myArrayInteger[] = { 6, 4, 2 };
+
+
+print ( "my integer: " + $myInteger );
+print ( "\n" );
+print ( "my float: " + $myFloat );
+print ( "\n" );
+print ( "my string: " + $myString );
+print ( "\n" );
+//print ("my array string: ")
+print ( $myArrayString );
+print ( "\n" );
+//print ("my array integer: ")
+print ( $myArrayInteger );
+print ( "\n" );

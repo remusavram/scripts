@@ -1,0 +1,36 @@
+//////  This script move a selected object 10cm upper  ////////////
+
+// Create a confirmDialog
+$confirm = `confirmDialog
+    -title "Move objects"
+    -message "Move selected objects with 10 cm upper!"
+    -messageAlign "center"
+    -button "Yes"
+    -button "No"
+    -defaultButton "Yes"
+    -cancelButton "No"
+    -dismissString "No man"`;
+
+
+if ( $confirm == "Yes" )
+{
+    // Add the selected object in a array
+    string $selectedObjects[] = `ls -sl`;
+    if ( $selectedObjects[0] == "" )
+    {
+       headsUpMessage "Please select minimum an object!";
+    }
+    else
+    {
+        // Move the selected object 10cm upper
+        for ( $object in $selectedObjects )
+        {
+               setAttr ( $object + ".translateY" ) 10;
+        } 
+    }
+}
+else
+{
+    headsUpMessage "You didn't move anything!";
+}
+

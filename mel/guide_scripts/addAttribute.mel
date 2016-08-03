@@ -1,0 +1,7 @@
+// This script create a new attribute for an object
+
+addAttr -longName "universalColor" -usedAsColor -attributeType "float3";
+        
+addAttr -longName "red" -at "float" -parent "universalColor";
+addAttr -longName "green" -at "float" -parent "universalColor";
+addAttr -longName "blue" -at "float" -parent "universalColor";

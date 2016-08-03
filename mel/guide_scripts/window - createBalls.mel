@@ -1,0 +1,36 @@
+// This script create balls using a window
+
+
+// Check if the window exists.
+if (`window -exists myWindow`)
+{
+    deleteUI -window myWindow;
+}
+
+
+// Create a window with 2 sliders:
+// - number of balls
+// - balls thickness
+// and a button that create the balls
+window -rtf true -title "Create a bunch of balls" myWindow;
+
+columnLayout;
+
+intSliderGrp -label "Number of Balls" -field true numBalls;
+floatSliderGrp -minValue 0.1 -maxValue 1 -label "Thickness" -field true ballThickness;
+
+button -c "findValues" -label "Make'm"; 
+
+showWindow myWindow;
+
+
+proc findValues () 
+{
+    /* This procedure extracts the values of number and thickness of balls 
+    and calls ballStack procedure to create them */
+    
+    int $myNumBalls = `intSliderGrp -q -value "numBalls"`;
+    float $myThickness = `floatSliderGrp -q -value "ballThickness"`;
+    
+    ballStack $myNumBalls $myThickness;
+}

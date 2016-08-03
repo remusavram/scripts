@@ -1,0 +1,38 @@
+// This script save a maya file incremental
+
+// Find the file name and strip off the extention
+string $fileName = `file -q -sceneName -shortName`;
+
+// repmace in $fileName the ".ma"/".mb" with nothing
+$fileName = substituteAllString( $fileName, ".ma" , "" );
+$fileName = substituteAllString( $fileName, ".mb" , "" );
+
+int $fileNumber;
+
+// find all numbers in the string
+string $stringNumber = `match "[0-9]+" $fileName`;
+
+// check to see if the file has a number and if not
+// set it as 1 and if it does have a number then set
+// remove the number and add one to it.
+if ( $stringNumber == "" ) 
+{
+    $fileNumber = 01;
+}
+else
+{
+    // convert the string in a integer
+    $fileNumber = $stringNumber;
+    $fileNumber++;
+    // replace in $fileName the find number with nothing
+    $fileName = substituteAllString( $fileName, $stringNumber, "" );
+}
+
+// Rename the file for saving
+file -rename ($fileName + $fileNumber + ".ma");
+
+// save it as a maya Ascii
+file -save -type "mayaAscii";
+print ( "\n" );
+print ( "File is saved as: " + ($fileName + $fileNumber + ".ma") );
+

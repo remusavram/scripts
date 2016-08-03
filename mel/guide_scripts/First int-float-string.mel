@@ -1,0 +1,17 @@
+// Create a int variable
+int $myFirstInt;
+$myFirstInt = 4;
+print ( "This is my first integer: " + $myFirstInt );
+print ( "\n" );
+
+// Create a float variable
+float $myFirstFloat;
+$myFirstFloat = 1.75;
+print ( "This is my first float: " + $myFirstFloat );
+print ( "\n" );
+
+// Create a string variable
+string $myFirstString;
+$myFirstString = "This is my first string!";
+print ( $myFirstString );
+print ( "\n" );

@@ -1,0 +1,26 @@
+// This script pteach you how to use attributes
+
+// Create objects
+sphere -name ball;
+move 2 2 0;
+polyCube -n box;
+move -2 2 0;
+
+// create a new attribute for ball object
+// keyable means add the new attribute to Channel Box
+select ball;
+addAttr -longName spinBox -defaultValue 0
+        -maxValue 360 -minValue -360 -keyable true;
+
+// connect attributes
+connectAttr ball.spinBox box.ry;
+connectAttr ball.ty box.ty;
+
+// create alias for attributes
+aliasAttr flatten box.sy
+aliasAttr -rm box.flatten;
+
+// hide attributes
+setAttr -keyable false box.sy;
+setAttr -keyable false box.sx;
+setAttr -keyable false box.sz;
