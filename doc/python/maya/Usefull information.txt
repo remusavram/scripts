@@ -1,0 +1,101 @@
+############################################################
+#  Here is added usefull information about Python in Maya. #
+############################################################
+
+1. Modules in Maya - collection of code that Python can run.
+There are only 4 modules for maya:
+ - import apps
+ - import cmds    (import maya.cmds as mc)
+ - import mel
+ - import utils
+ 
+2. How see all attributes which an object has: 
+'''
+listAttributes = mc.listAttr("object")
+for i in listAttributes:
+	print i
+'''
+
+3. How see all the methodes which a command has:
+for method1 in dir(str):
+    print(method1)
+	
+4. If you want to star automaticaly a script everytime when you start Maya,
+you must add that scripy here: "C:\Users\Remus\Documents\maya\2014-x64\scripts\".
+
+5. Using mayapy.exe from: C:\Program Files\Autodesk\Maya2014\bin without open Maya
+>>> import maya.standalone
+>>> maya.standalone.initialize()
+>>> import maya.cmds as mc
+
+6. How to save a maya file with mayapy.exe without open Maya:
+>>> import maya.standalone
+>>> maya.standalone.initialize()
+>>> import maya.cmds as mc
+>>> mc.polyCube()
+>>> mc.file(rename="C:/cube.ma")
+>>> mc. file(save=True)
+
+7. How yo use Python GUI:
+System Properties -> Advanced -> Environment Variables -> System variables -> New
+Variable name: PYTHONPATH
+Variable value: C:\Program Files\Autodesk\Maya2014\Python\Lib\site-packages
+
+Variable name: MAYA_LOCATION
+Variable value: C:\Program Files\Autodesk\Maya2014
+
+Variable name: PATH
+Variable value: C:\Program Files\Autodesk\Maya2014\bin
+
+8. How to setup playback real-time:
+Preferenes -> Time Slider -> Playback -> Playblack speed: Real-time [24 fps]
+
+9. How to see what type is an object:
+print (type(diameterCircle))
+
+10. How to find all the falgs with help command:
+maya.cmds.help("object")
+
+11. Find all attributes for Python:
+help (maya.cmds)
+
+12. Using MEL in Python:
+import maya.mel
+	
+help(maya.mel)
+maya.mel.eval( "select lambert1;" )
+
+13. Check the platform:
+import platform
+help(platform)
+
+platform.platform()
+
+14. Show all the keyword
+import keyword
+for kw in keyword.kwlist:
+    print (kw)
+	
+15.Convert MEL file to Python file
+Replace:
+"procedure" -> "function"
+'proc' -> 'def'
+' ()' -> '():'
+ '{' -> ''
+ '}' -> ''
+ '$' -> ''
+ 'string ' -> ''
+ 'float ' -> ''
+ 'int ' -> ''
+ '//' -> '#'
+ '/*' -> '"""'
+ '*/' -> '"""'
+ '[]' -> ''
+ '`ls -sl`' -> 'mc.ls( sl=True )'
+
+16. Sublime_text for maya
+Add this in a maya window
+
+p, li { white-space: pre-wrap; } from maya import cmds try: cmds.commandPort(name=':7002', close=True) except: pass
+cmds.commandPort(name=':7002', sourceType='python')
+cmds.commandPort(name=':7001', sourceType='mel')
