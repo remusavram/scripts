@@ -1,0 +1,9 @@
+<RCC>
+	<qresource>
+		
+		<file>Transform.png</file>
+		<file>Camera.png</file>
+		<file>Light.png</file>
+		
+	</qresource>
+</RCC>
