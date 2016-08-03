@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="images">
+    <file>metal-volume-button-template.jpg</file>
+  </qresource>
+</RCC>
