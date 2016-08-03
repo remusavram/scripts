@@ -1,0 +1,36 @@
+
+
+/*Globally*/
+
+
+/*ConfirmDialog*/
+QDialog{
+    background-color:#101010;
+}
+QWidget#main_wid{
+    background-color:#101010;
+}
+QWidget#background_wid{
+    background-color:#101010;
+}
+QPushButton{
+    border:1px solid #333;
+    background-color:#222;
+    padding:15px;
+    color:#999;
+}
+QPushButton:hover{
+    border:1px solid #888;
+    background-color:#555;
+    color:#ddd;
+}
+QPushButton:default{
+    border:1px solid #888;
+    background-color:#555;
+    color:#ddd;
+}
+QPushButton:pressed{
+    border:1px solid #aaa;
+    background-color:#777;
+    color:#fff;
+}
